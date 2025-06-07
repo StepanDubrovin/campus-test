@@ -2,7 +2,7 @@ import express from 'express'
 import 'dotenv/config';
 import cookieParser from "cookie-parser"
 
-import UserModel from './models/uer.dal';
+import UserModel from './models/user.dal';
 import UserService from './services/user.service';
 import UserController from './controllers/user.controller';
 import userRoutes from './routes/user.route';

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { v7 as uuidv7 } from 'uuid';
 import { INewUser } from "../interfaces/INewUser";
-import UserModel from "../models/uer.dal";
+import UserModel from "../models/user.dal";
 import TokenService from "./token.service";
 import { ILoginData } from '../interfaces/ILoginData';
 import { IUpdateUserData } from '../interfaces/IUpdateUserData';
