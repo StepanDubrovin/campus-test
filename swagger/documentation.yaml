@@ -1,0 +1,258 @@
+openapi: 3.0.0
+info:
+  title: Campus Todo API
+  version: 1.0.0
+  description: API для управления задачами и пользователями с использованием JWT
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Auth
+    description: Регистрация, логин, выход и проверка авторизации
+  - name: Users
+    description: Управление пользователями
+  - name: Tasks
+    description: Управление задачами
+
+paths:
+  /api/registration:
+    post:
+      tags: [Auth]
+      summary: Регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required: [firstName, lastName, email, password]
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: User123
+                lastName:
+                  type: string
+                  example: User456  
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '201':
+          description: Успешная регистрация
+        '400':
+          description: Ошибка валидации
+
+  /api/login:
+    post:
+      tags: [Auth]
+      summary: Вход пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required: [email, password]
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Успешный вход
+        '401':
+          description: Неверный логин или пароль
+
+  /api/logout:
+    post:
+      tags: [Auth]
+      summary: Выход пользователя
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Успешный выход
+
+  /api/checkAuth:
+    get:
+      tags: [Auth]
+      summary: Проверка авторизации
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Авторизован
+
+  /api/users:
+    get:
+      tags: [Users]
+      summary: Получить всех пользователей
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Список пользователей
+
+  /api/user/{id}:
+    get:
+      tags: [Users]
+      summary: Получить пользователя по ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Данные пользователя
+    put:
+      tags: [Users]
+      summary: Обновить пользователя
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Обновлено
+    delete:
+      tags: [Users]
+      summary: Удалить пользователя
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Удалено
+
+  /api/task:
+    post:
+      tags: [Tasks]
+      summary: Создание задачи
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required: [title, status]
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, done]
+      responses:
+        '201':
+          description: Задача создана
+
+  /api/tasks:
+    get:
+      tags: [Tasks]
+      summary: Получить все задачи
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Список задач
+
+  /api/task/{task_id}:
+    get:
+      tags: [Tasks]
+      summary: Получить задачу по ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Задача найдена
+    put:
+      tags: [Tasks]
+      summary: Обновить задачу
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, done]
+      responses:
+        '200':
+          description: Обновлено
+    delete:
+      tags: [Tasks]
+      summary: Удалить задачу
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Удалено
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
